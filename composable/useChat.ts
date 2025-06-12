@@ -1,32 +1,43 @@
 import { ref } from 'vue'
 
+interface Message {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 interface ChatResponse {
   response: string
 }
 
 export function useChat() {
-  const response = ref<string | null>(null)
+  const messages = ref<Message[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
 
   const sendMessage = async (message: string) => {
     loading.value = true
-    response.value = null
     error.value = null
 
+    // user message push
+    messages.value.push({ role: 'user', content: message })
+
     try {
-const { data, error: fetchError } = await useFetch<ChatResponse>('http://127.0.0.1:8000/chat', {
-        method: 'POST',
-        body: { message },
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
+      const { data, error: fetchError } = await useFetch<ChatResponse>(
+        'http://127.0.0.1:8000/chat',
+        {
+          method: 'POST',
+          body: { messages: messages.value },
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
 
       if (fetchError.value) {
         error.value = fetchError.value.message
-      } else {
-        response.value = data.value?.response ?? ''
+      } else if (data.value?.response) {
+        // assistant message push
+        messages.value.push({ role: 'assistant', content: data.value.response })
       }
     } catch (err: unknown) {
       error.value = (err as Error).message
@@ -36,7 +47,7 @@ const { data, error: fetchError } = await useFetch<ChatResponse>('http://127.0.0
   }
 
   return {
-    response,
+    messages,
     loading,
     error,
     sendMessage,
