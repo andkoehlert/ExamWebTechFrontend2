@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+
+body {
+  
+}
+
+:root {
+  --gutter-h: 40px; 
+}
+
+
+@layer components {
+  .btn {
+    @apply bg-[#00DC82] text-white px-3 py-2 rounded-md text-sm text-white;
+  }
+  .card {
+    @apply p-3 rounded-md bg-white shadow-md h-full;
+  }
+  .thumb {
+    max-height: 500px;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 0.375rem;
+  }
+ 
+
+  
+}
+
+    @media(min-width: 320px) {
+ h3 {
+    font-size: 1rem;
+  }
+  h2 {
+    font-size: 1.4rem;
+  }
+  h1 {
+    font-size: 1.8rem;
+  }
+ body  p {
+    font-size: 0.9rem;
+  }
+ 
+  }
+
+
+@media(min-width: 1200px) {
+ h3 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 2rem;
+  }
+  h1 {
+    font-size: 5rem;
+  }
+ 
+  }
+
+  @media(min-width: 976px) {
+ h3 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 2rem;
+  }
+  h1 {
+    font-size: 5rem;
+  }
+ 
+  }
+
+
+
+  @media(max-width: 1200px) {
+.herosection {
+  display: none;
+}
+  }
