@@ -4,40 +4,42 @@ interface Message {
   role: 'user' | 'assistant'
   content: string
 }
-
-interface ChatResponse {
-  response: string
-}
-
 export function useChat() {
   const messages = ref<Message[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  const sendMessage = async (message: string) => {
+  const sendMessage = async (message: string, mode: string) => {
     loading.value = true
     error.value = null
 
-    // user message push
     messages.value.push({ role: 'user', content: message })
 
     try {
-      const { data, error: fetchError } = await useFetch<ChatResponse>(
-        'http://127.0.0.1:8000/chat',
-        {
-          method: 'POST',
-          body: { messages: messages.value },
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
+      const response = await fetch('http://127.0.0.1:8000/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: messages.value, mode }), 
+      })
 
-      if (fetchError.value) {
-        error.value = fetchError.value.message
-      } else if (data.value?.response) {
-        // assistant message push
-        messages.value.push({ role: 'assistant', content: data.value.response })
+      if (!response.body) {
+        throw new Error('No response body')
+      }
+
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let done = false
+      let assistantMessage = ''
+
+      messages.value.push({ role: 'assistant', content: '' })
+
+      while (!done) {
+        const { value, done: doneReading } = await reader.read()
+        done = doneReading
+        if (value) {
+          assistantMessage += decoder.decode(value)
+          messages.value[messages.value.length - 1].content = assistantMessage
+        }
       }
     } catch (err: unknown) {
       error.value = (err as Error).message
@@ -53,3 +55,4 @@ export function useChat() {
     sendMessage,
   }
 }
+
