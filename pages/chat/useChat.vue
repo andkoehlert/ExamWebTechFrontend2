@@ -1,12 +1,28 @@
 <template>
   <div class="flex h-screen">
    <div class="md:w-1/3 w-full p-4 flex justify-center">
+    <div class="mb-4">
+  <label class="block font-bold mb-1">Choose your avatar:</label>
+  <div class="flex space-x-4">
+   <img
+  v-for="avatar in avatars"
+  :key="avatar.name"
+  :src="avatar.src"
+  :alt="avatar.name"
+  class="w-16 h-16 rounded-full border-4 cursor-pointer"
+  :class="{ 'border-blue-500': selectedAvatar === avatar.src }"
+  @click="selectedAvatar = avatar.src"
+/>
+  </div>
   <spline-viewer
     url="https://prod.spline.design/m1zskWWSib-BHFXp/scene.splinecode"
     style="width: 100%; max-width: 500px; height: 500px; border-radius: 12px;"
   ></spline-viewer>
+  
 </div>
 
+
+</div>
 
     <div class="w-2/3 p-6 max-w-3xl mx-auto">
       <select v-model="mode" class="mb-4 p-2 border rounded w-full">
@@ -29,16 +45,28 @@
       <div v-if="error" class="mt-2 text-red-600">{{ error }}</div>
 
       <!-- Current chat messages -->
-      <div v-for="(msg, index) in messages" :key="index" class="mb-2">
-        <div
-          :class="{
-            'text-right text-blue-600': msg.role === 'user',
-            'text-left text-green-700': msg.role === 'assistant',
-          }"
-        >
-          {{ msg.content }}
-        </div>
-      </div>
+  <div
+  v-for="(msg, index) in messages"
+  :key="index"
+  class="mb-2 flex items-start"
+  :class="{ 'justify-end': msg.role === 'user' }"
+>
+<img
+  v-if="msg.role === 'user'"
+  :src="selectedAvatar"
+  alt="avatar"
+  class="w-8 h-8 rounded-full mr-2"
+/>
+  <div
+    :class="{
+      'text-right text-blue-600': msg.role === 'user',
+      'text-left text-green-700': msg.role === 'assistant',
+    }"
+    class="max-w-[80%] w-fit bg-white p-2 rounded shadow"
+  >
+    {{ msg.content }}
+  </div>
+</div>
 
       <!-- Saved chat toggle -->
       <div class="fixed bottom-4 right-4 z-50">
@@ -90,10 +118,25 @@ import { useChat } from '../../composable/useChat'
 import { SaveTheChat } from '../../composable/saveTheChat'
 import { useSavedChats } from '../../composable/useSavedCharts' 
 
+
+const avatars = [
+  { name: 'avatar1.jpg', src: '/avatars/avatar1.jpg' },
+  { name: 'avatar2.jpg', src: '/avatars/avatar2.jpg' },
+  { name: 'avatar3.jpg', src: '/avatars/avatar3.jpg' },
+  { name: 'avatar4.jpg', src: '/avatars/avatar4.jpg' },
+  { name: 'avatar5.jpg', src: '/avatars/avatar5.jpg' },
+  { name: 'avatar6.jpg', src: '/avatars/avatar6.jpg' }
+]
+
+const selectedAvatar = ref(avatars[0].src)
+
+
+
 const message = ref('')
 const mode = ref('friendly_ai')
 
 const { messages, loading, error, sendMessage } = useChat()
+
 const { saveChat } = SaveTheChat()
 
 // saved chats composable state
@@ -126,7 +169,7 @@ const save = async () => {
   }
 }
 
-import { onMounted } from 'vue'
+
 
 onMounted(() => {
   const script = document.createElement('script')
