@@ -1,28 +1,50 @@
 <template>
-  <div class="flex h-screen">
-   <div class="md:w-1/3 w-full p-4 flex justify-center">
-    <div class="mb-4">
-  <label class="block font-bold mb-1">Choose your avatar:</label>
-  <div class="flex space-x-4">
-   <img
-  v-for="avatar in avatars"
-  :key="avatar.name"
-  :src="avatar.src"
-  :alt="avatar.name"
-  class="w-16 h-16 rounded-full border-4 cursor-pointer"
-  :class="{ 'border-blue-500': selectedAvatar === avatar.src }"
-  @click="selectedAvatar = avatar.src"
-/>
-  </div>
-  <spline-viewer
-    url="https://prod.spline.design/m1zskWWSib-BHFXp/scene.splinecode"
-    style="width: 100%; max-width: 500px; height: 500px; border-radius: 12px;"
-  ></spline-viewer>
+<div class="flex h-screen" :style="{ backgroundColor }">
   
+<div class="md:w-1/3 w-full p-4 flex justify-center">
+  <div class="mb-4">
+    <!-- NEW COLOR PICKER BLOCK -->
+    <div class="mb-6">
+      <label class="block font-bold mb-2 text-lg">🎨 Choose your background:</label>
+      <div class="flex flex-wrap gap-2">
+        <div
+          v-for="color in availableColors"
+          :key="color"
+          :style="{ backgroundColor: color }"
+          class="w-10 h-10 rounded-full border-4 cursor-pointer transition-transform duration-200"
+          :class="{ 'border-black scale-110': backgroundColor === color }"
+          @click="backgroundColor = color"
+        ></div>
+      </div>
+    </div>
+
+    <!-- AVATAR PICKER BLOCK -->
+    <div class="mb-6">
+      <label class="block font-bold mb-1">Choose your avatar:</label>
+      <div class="flex space-x-4">
+        <img
+          v-for="avatar in avatars"
+          :key="avatar.name"
+          :src="avatar.src"
+          :alt="avatar.name"
+          class="w-16 h-16 rounded-full border-4 cursor-pointer"
+          :class="{ 'border-blue-500': selectedAvatar === avatar.src }"
+          @click="selectedAvatar = avatar.src"
+        />
+      </div>
+    </div>
+
+    <!-- SPLINE VIEWER -->
+   <!--  <spline-viewer
+      url="https://prod.spline.design/m1zskWWSib-BHFXp/scene.splinecode"
+      style="width: 100%; max-width: 500px; height: 500px; border-radius: 12px;"
+    ></spline-viewer> -->
+       <FoxModel/>
+  </div>
 </div>
 
 
-</div>
+
 
     <div class="w-2/3 p-6 max-w-3xl mx-auto">
       <select v-model="mode" class="mb-4 p-2 border rounded w-full">
@@ -117,6 +139,7 @@ import { ref, onMounted } from 'vue'
 import { useChat } from '../../composable/useChat'
 import { SaveTheChat } from '../../composable/saveTheChat'
 import { useSavedChats } from '../../composable/useSavedCharts' 
+import FoxModel from '../../components/FoxModel.vue'
 
 
 const avatars = [
@@ -127,6 +150,11 @@ const avatars = [
   { name: 'avatar5.jpg', src: '/avatars/avatar5.jpg' },
   { name: 'avatar6.jpg', src: '/avatars/avatar6.jpg' }
 ]
+
+// Color picker
+const backgroundColor = ref('#f9f3ff') 
+const availableColors = ['#f9f3ff', '#ffebee', '#fff9c4', '#e1f5fe', '#e8f5e9', '#fce4ec']
+
 
 const selectedAvatar = ref(avatars[0].src)
 
@@ -190,6 +218,10 @@ onMounted(() => {
 }
 .fade-enter-from, .fade-leave-to {
   opacity: 0;
+}
+
+div[style*="background-color"] {
+  transition: background-color 0.5s ease;
 }
 
 </style>
