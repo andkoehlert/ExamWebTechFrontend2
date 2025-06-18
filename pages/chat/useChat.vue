@@ -39,10 +39,13 @@
       url="https://prod.spline.design/m1zskWWSib-BHFXp/scene.splinecode"
       style="width: 100%; max-width: 500px; height: 500px; border-radius: 12px;"
     ></spline-viewer> -->
+     <!--  <spline-viewer
+      url="https://prod.spline.design/Nk54H99EYlI-c1BZ/scene.splinecode"
+      style="width: 100%; max-width: 500px; height: 500px; border-radius: 12px;"
+    ></spline-viewer> -->
        <FoxModel/>
   </div>
 </div>
-
 
 
 
@@ -140,7 +143,6 @@ import { useChat } from '../../composable/useChat'
 import { SaveTheChat } from '../../composable/saveTheChat'
 import { useSavedChats } from '../../composable/useSavedCharts' 
 import FoxModel from '../../components/FoxModel.vue'
-
 
 const avatars = [
   { name: 'avatar1.jpg', src: '/avatars/avatar1.jpg' },

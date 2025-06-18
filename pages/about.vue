@@ -1,6 +1,6 @@
 <template>
     <div>
-        <FoxModel/>
+     <h1>About</h1>
     </div>
 </template>
 
